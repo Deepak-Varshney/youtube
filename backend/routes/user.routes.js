@@ -15,13 +15,15 @@
 
 
 import express from 'express';
-import { getUserProfile, updateUserProfile, deleteUser } from '../controllers/user.controller.js';
+import { getUserProfile, updateUserProfile, deleteUser, getUser } from '../controllers/user.controller.js';
 import protect from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
 // @desc    Get current user's profile
 // @route   GET /api/users/me
+router.get('/profile/:id', getUser);
+
 router.get('/me', protect, getUserProfile);
 
 // @desc    Update current user's profile
@@ -33,3 +35,4 @@ router.put('/me', protect, updateUserProfile);
 router.delete('/me', protect, deleteUser);
 
 export default router;
+    

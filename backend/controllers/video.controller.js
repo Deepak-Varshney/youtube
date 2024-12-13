@@ -1,29 +1,17 @@
+import mongoose from 'mongoose';
 import {Video} from '../models/video.model.js';
 
 // @desc    Get all videos
 // @route   GET /api/videos
 const getAllVideos = async (req, res) => {
   try {
-    const videos = await Video.find();
+    const videos = await Video.find().populate('user', 'username profilePicture'); // Populate additional user details
     res.status(200).json(videos);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-// @desc    Create a new video
-// @route   POST /api/videos
-// const createVideo = async (req, res) => {
-//   const { title, description, videoUrl, thumbnailUrl, } = req.body;
-
-//   try {
-//     const newVideo = new Video({ title, description, videoUrl, thumbnailUrl, user:req.body.user });
-//     await newVideo.save();
-//     res.status(201).json(newVideo);
-//   } catch (error) {
-//     res.status(400).json({ message: error.message });
-//   }
-// };
 
 
 // @desc    Create a new video
@@ -78,4 +66,29 @@ const deleteVideo = async (req, res) => {
   }
 };
 
-export { getAllVideos, createVideo, deleteVideo };
+//  Get a specific video by ID
+const getVideo = async (req, res) => {
+  try {
+    const videoId = req.params.id;
+
+    // Validate the video ID (optional but recommended)
+    if (!mongoose.Types.ObjectId.isValid(videoId)) {
+      return res.status(400).json({ message: 'Invalid video ID' });
+    }
+
+    const video = await Video.findById(videoId).populate('user', 'username email profilePicture subscribers'); // Populate additional user details
+
+
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+
+    res.status(200).json(video);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+export { getAllVideos, createVideo, deleteVideo, getVideo };
+

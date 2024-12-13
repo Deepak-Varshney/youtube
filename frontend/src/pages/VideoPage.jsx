@@ -1,7 +1,7 @@
 // import React from 'react';
 // import { useParams } from 'react-router-dom';
 
-// const sampleVideo = {
+// const video = {
 //   _id: '1',
 //   title: 'Sample Video Title',
 //   description: 'This is a detailed description of the video. It can be multiple lines long and contain lots of information about the video content.',
@@ -100,7 +100,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-
+import { format } from 'timeago.js';
 const VideoPage = () => {
   const { id } = useParams();
   const [video, setVideo] = useState(null);
@@ -111,7 +111,7 @@ const VideoPage = () => {
     const fetchVideo = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`https://solid-space-spoon-jj55649rggrpcq95r-8800.app.github.dev/api/videos/${id}`);
+        const response = await axios.get(`http://localhost:8800/api/videos/${id}`);
         setVideo(response.data);
       } catch (err) {
         setError(err.message);
@@ -123,9 +123,9 @@ const VideoPage = () => {
     fetchVideo();
   }, [id]);
 
-  // if (loading) return <div className="flex justify-center p-8">Loading...</div>;
-  // if (error) return <div className="flex justify-center p-8 text-red-500">Error: {error}</div>;
-  // if (!video) return <div className="flex justify-center p-8">Video not found</div>;
+  if (loading) return <div className="flex justify-center p-8">Loading...</div>;
+  if (error) return <div className="flex justify-center p-8 text-red-500">Error: {error}</div>;
+  if (!video) return <div className="flex justify-center p-8">Video not found</div>;
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 p-4">
@@ -146,17 +146,14 @@ const VideoPage = () => {
         <div className="mt-4">
           <h1 className="text-xl font-bold">{video.title}</h1>
           <div className="flex justify-between items-center mt-2">
-            <span className="text-gray-600">{video.views} views • {video.createdAt}</span>
+            <span className="text-gray-600">{video.views} views • {format(video.createdAt)}</span>
             <div className="flex gap-4">
               <button className="flex items-center gap-1">
                 <span>👍 {video.likes.length}</span>
               </button>
-              
-            
-              {/* ... rest of your component ... */}
             
               <button className="flex items-center gap-1">
-                <span>👎 {sampleVideo.dislikes.length}</span>
+                <span>👎 {video.dislikes.length}</span>
               </button>
               <button className="flex items-center gap-1">
                 <span>Share</span>
@@ -167,13 +164,13 @@ const VideoPage = () => {
           {/* Channel Info */}
           <div className="flex items-center gap-4 mt-4 pb-4 border-b">
             <img
-              src={sampleVideo.user.profilePicture}
-              alt={sampleVideo.user.username}
+              src={video.user.profilePicture}
+              alt={video.user.username}
               className="w-12 h-12 rounded-full"
             />
             <div>
-              <h3 className="font-bold">{sampleVideo.user.username}</h3>
-              <p className="text-gray-600">{sampleVideo.user.subscribers} subscribers</p>
+              <h3 className="font-bold">{video.user.username}</h3>
+              <p className="text-gray-600">{video.user.subscribers} subscribers</p>
             </div>
             <button className="ml-auto bg-red-600 text-white px-4 py-2 rounded-full">
               Subscribe
@@ -182,7 +179,7 @@ const VideoPage = () => {
 
           {/* Description */}
           <div className="mt-4 bg-gray-100 p-4 rounded-lg">
-            <p>{sampleVideo.description}</p>
+            <p>{video.description}</p>
           </div>
 
           {/* Comments Section */}

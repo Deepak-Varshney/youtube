@@ -99,9 +99,32 @@
 // };
 
 // export { registerUser, loginUser };
+import mongoose from 'mongoose';
 import {User} from '../models/user.model.js';
 // @desc    Get the current user's profile
 // @route   GET /api/users/me
+
+export const getUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Validate the user ID
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    const user = await User.findById(userId).select('-password'); // Exclude password
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const getUserProfile = async (req, res) => {
   try {
     // Fetch user from database using the ID from the JWT token

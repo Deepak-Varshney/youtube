@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { format } from 'timeago.js';
 
 
 const VideoCard = ({video}) => {
@@ -16,7 +17,7 @@ const VideoCard = ({video}) => {
           </Link>
           <div className="text-gray-600 text-sm">{video.user.username}</div>
           <span className="text-gray-600 text-sm">{video.views} views • </span>
-          <span className="text-gray-600 text-sm">{video.createdAt}</span>
+          <span className="text-gray-600 text-sm">{format(video.createdAt)}</span>
         </div>
       </div>
     </div>

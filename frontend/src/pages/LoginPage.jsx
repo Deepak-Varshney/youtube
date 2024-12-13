@@ -20,7 +20,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const endpoint = isLogin ? '/auth/login' : '/auth/signup';
-      const response = await axios.post(`https://solid-space-spoon-jj55649rggrpcq95r-8800.app.github.dev/api${endpoint}`, formData);
+      const response = await axios.post(`/api${endpoint}`, formData);
       localStorage.setItem('user', JSON.stringify(response.data));
       navigate('/');
     } catch (err) {
