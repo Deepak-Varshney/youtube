@@ -6,11 +6,18 @@ import userRoutes from './routes/user.routes.js';
 import videoRoutes from './routes/video.routes.js';
 import commentRoutes from './routes/comment.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 8000;
 
+// Use CORS middleware to allow frontend (Vite app) to make requests to backend
+app.use(cors({
+  origin: 'http://localhost:5173',  // Vite frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // List the methods you expect
+  credentials: true, // Allow cookies if needed
+}));
 app.use(express.json());
 app.use(cookieParser()); 
 // Connect to MongoDB

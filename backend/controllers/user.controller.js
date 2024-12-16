@@ -99,9 +99,32 @@
 // };
 
 // export { registerUser, loginUser };
+import mongoose from 'mongoose';
 import {User} from '../models/user.model.js';
 // @desc    Get the current user's profile
 // @route   GET /api/users/me
+
+export const getUser = async (req, res) => {
+  try {
+    const userId = req.params.id;
+
+    // Validate the user ID
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
+    const user = await User.findById(userId).select('-password'); // Exclude password
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 const getUserProfile = async (req, res) => {
   try {
     // Fetch user from database using the ID from the JWT token
@@ -153,7 +176,7 @@ export { updateUserProfile };
 
 // @desc    Delete user account
 // @route   DELETE /api/users/me
-const deleteUser = async (req, res) => {
+export const deleteUser = async (req, res) => {
   try {
     // Find the user by their ID (from the JWT token)
     const user = await User.findById(req.user.id);
@@ -171,4 +194,68 @@ const deleteUser = async (req, res) => {
   }
 };
 
-export { deleteUser };
+// Subscribe to a channel
+export const subscribe = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const channelId = req.params.id;
+
+    // Validate the channel ID
+    if (!mongoose.Types.ObjectId.isValid(channelId)) {
+      return res.status(400).json({ message: 'Invalid channel ID' });
+    }
+
+    // Check if the user is already subscribed to the channel
+    const user = await User.findById(userId);
+    if (user.subscribedTo.includes(channelId)) {
+      return res.status(400).json({ message: 'You are already subscribed to this channel' });
+    }
+
+    // Add the channel to the user's subscriptions
+    user.subscribedTo.push(channelId);
+    await user.save();
+
+    // Increment the subscriber count of the channel
+    const channel = await User.findById(channelId);
+    channel.subscribers += 1;
+    await channel.save();
+
+
+    res.status(200).json({ message: 'Subscribed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// Unsubscribe from a channel
+export const unsubscribe = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const channelId = req.params.id;
+
+    // Validate the channel ID
+    if (!mongoose.Types.ObjectId.isValid(channelId)) {
+      return res.status(400).json({ message: 'Invalid channel ID' });
+    }
+
+    // Check if the user is subscribed to the channel
+    const user = await User.findById(userId);
+    if (!user.subscribedTo.includes(channelId)) {
+      return res.status(400).json({ message: 'You are not subscribed to this channel' });
+    }
+
+    // Remove the channel from the user's subscriptions
+    user.subscribedTo.pull(channelId);
+    await user.save();
+
+    // Decrement the subscriber count of the channel
+    const channel = await User.findById(channelId);
+    channel.subscribers -= 1;
+    await channel.save();
+
+    res.status(200).json({ message: 'Unsubscribed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
