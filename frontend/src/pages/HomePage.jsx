@@ -9,7 +9,7 @@ const HomePage = () => {
     useEffect(() => {
         const fetchVideos = async () => {
             try {
-                const res = await axios.get('/api/videos');
+                const res = await axios.get('/api/videos/random');
                 setVideos(res.data);
             } catch (error) {
                 console.log(error);
@@ -22,8 +22,6 @@ const HomePage = () => {
         <div className="p-4 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {videos.map((video, index) => (
                 <>
-                <VideoCard key={index} video={video} />
-                <VideoCard key={index} video={video} />
                 <VideoCard key={index} video={video} />
                 </>
             ))}

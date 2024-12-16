@@ -8,7 +8,7 @@ import { MdAccountCircle } from "react-icons/md";
 
 const SideNav = ({ isOpen,setIsOpen }) => {
   return (
-    <div className={`fixed top-0 left-0 h-screen bg-purple-400 transition-all duration-300 ${isOpen ? 'w-72' : 'w-36'}`}>
+    <div className={`fixed top-0 left-0 h-screen transition-all duration-300 ${isOpen ? 'w-72' : 'w-36'}`}>
       <div className="overflow-y-auto pt-16">
         <div className="px-3">
           {/* Main Section */}

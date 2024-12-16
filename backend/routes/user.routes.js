@@ -15,7 +15,7 @@
 
 
 import express from 'express';
-import { getUserProfile, updateUserProfile, deleteUser, getUser } from '../controllers/user.controller.js';
+import { getUserProfile, updateUserProfile, deleteUser, getUser, subscribe, unsubscribe } from '../controllers/user.controller.js';
 import protect from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -33,6 +33,12 @@ router.put('/me', protect, updateUserProfile);
 // @desc    Delete current user's account
 // @route   DELETE /api/users/me
 router.delete('/me', protect, deleteUser);
+
+// Subscribe to a channel (Protected)
+router.put('/:id/subscribe', protect, subscrwwibe);
+
+// Unsubscribe from a channel (Protected)
+router.put('/:id/unsubscribe', protect, unsubscribe);
 
 export default router;
     

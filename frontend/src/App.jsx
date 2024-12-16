@@ -16,7 +16,7 @@ function App() {
     <SideNav isOpen={isOpen}/>
       <div className="min-h-screen">
         <Navbar setIsOpen={setIsOpen} isOpen={isOpen}/>
-        <div className={`transition-all duration-300 pt-16 bg-red-400 ${isOpen ? 'pl-72' : 'pl-36'}`}>
+        <div className={`transition-all duration-300 pt-16 ${isOpen ? 'pl-72' : 'pl-36'}`}>
           <Routes>
             <Route path="/">
               <Route index element={<HomePage />} />
